@@ -7,18 +7,37 @@ const Slider = () => {
     const frameWidth = document.getElementById('sliderFrame')?.clientWidth
     const [slideDegree, setSlideDegree] = useState(0)
     const [stepCount, setStepCount] = useState(0)
-    const [lastSlideChangeTime, setLastSlideChangeTime] = useState(Date.now)
 
+    const requestRef = React.useRef<any>(0);
+    const previousTimeRef = React.useRef(Date.now());
 
-
-    function timerF() {
-        if (Date.now() - lastSlideChangeTime > 8000) {
-            setStepCount(stepCount + 1)
-            setLastSlideChangeTime(Date.now)
+         
+  React.useEffect(() => {
+    const animate = () => {
+        if (Date.now()- previousTimeRef.current >8000) {
+          
+        previousTimeRef.current = Date.now();
+          setStepCount (value=>value + 1);
         }
-        requestAnimationFrame(timerF)
+        requestRef.current = requestAnimationFrame(animate);
+      }
+    requestRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(requestRef.current);
+  }, []);
+  
+
+  useEffect(() => {
+    if (stepCount > 0) {
+        if (slideDegree === -3) {
+            setSlideDegree(0)
+        }
+        else {
+            setSlideDegree(slideDegree - 1)
+        }
     }
-    requestAnimationFrame(timerF)
+}, [stepCount])
+
+  
 
 
 
@@ -106,16 +125,7 @@ const Slider = () => {
         return slideStyle
     }
 
-    useEffect(() => {
-        if (stepCount > 0) {
-            if (slideDegree === -3) {
-                setSlideDegree(0)
-            }
-            else {
-                setSlideDegree(slideDegree - 1)
-            }
-        }
-    }, [stepCount])
+   
 
 
 
@@ -127,38 +137,38 @@ const Slider = () => {
 
             <div style={sliderStyle}>
                 <div style={slideStyleF(0, 'rgba(0,255,0, 0.8)')}>
-        1
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tenetur corrupti cumque rerum consequatur iste nobis obcaecati, sapiente fugiat nulla, totam a ratione mollitia aliquid qui soluta eligendi? Quod, dolore tempora?
                 </div>
                 <div style={slideStyleF(1, 'rgba(255,0,0,0.8)')}>
-2
+Lorem ipsum dolor, sit amet consectetur adipisicing elit. Soluta eius harum veritatis debitis quam aliquam, ratione sed error quod laborum blanditiis sint doloremque iusto deleniti dolore dolorem ipsam quaerat voluptatibus.
                 </div>
                 <div style={slideStyleF(2, 'rgba(0,0,255,0.8)')}>
-3
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius ex cupiditate reprehenderit delectus provident tempora hic odio assumenda consequuntur quibusdam nulla labore, nam dolores voluptatum atque asperiores deleniti id vero.
                 </div>
                 <div style={slideStyleF(3, 'rgba(255,0,255,0.8)')}>
-4
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae earum, vitae velit dolores fugiat non alias commodi sed libero, mollitia omnis corrupti ea exercitationem ipsa id dolorem ullam deserunt debitis?
                 </div>
 
 
             </div>
             <div style={coverStyle}>
                 <div onClick={() => {
-                    setLastSlideChangeTime(Date.now())
+                    previousTimeRef.current = Date.now()
                     setSlideDegree(0)
 
                 }} style={coverButtonStyleF(0)}></div>
                 <div onClick={() => {
-                    setLastSlideChangeTime(Date.now())
+                    previousTimeRef.current = Date.now()
                     setSlideDegree(-1)
 
                 }} style={coverButtonStyleF(-1)}></div>
                 <div onClick={() => {
-                    setLastSlideChangeTime(Date.now())
+                    previousTimeRef.current = Date.now()
                     setSlideDegree(-2)
 
                 }} style={coverButtonStyleF(-2)}></div>
                 <div onClick={() => {
-                    setLastSlideChangeTime(Date.now())
+                   previousTimeRef.current = Date.now()
                     setSlideDegree(-3)
 
                 }} style={coverButtonStyleF(-3)}></div>
